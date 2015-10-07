@@ -31,3 +31,7 @@ The `…` after `--steps` is where your primary steps go, and the argument that 
 * `Args=…`: The arguments to pass to the application. EMR will run Herder as `hadoop jar herder.jar $Args`. The first argument must be `notify`, and after that you need to specify `--topic-arn ARN` and (optionally) `--subject SUBJECT`.
 
 Make sure your cluster has the right permissions to publish to the SNS topic you specify.
+
+## Copyright
+
+© 2015 Burt AB, see LICENSE.txt (BSD 3-Clause).
