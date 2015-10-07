@@ -1,0 +1,6 @@
+language: ruby
+sudo: false
+script: bundle exec rspec
+rvm:
+  - jruby
+  - jruby-head
