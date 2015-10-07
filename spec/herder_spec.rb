@@ -34,19 +34,23 @@ describe Herder do
   end
 
   describe '#notify' do
-    before do
-      herder.notify('TOPIC_ARN', 'Job complete')
-    end
-
     it 'publishes a message to the specified topic' do
+      herder.notify('TOPIC_ARN', 'Job complete')
       expect(sns_client).to have_received(:publish).with(hash_including(topic_arn: 'TOPIC_ARN'))
     end
 
     it 'sets the subject to the specified string' do
+      herder.notify('TOPIC_ARN', 'Job complete')
       expect(sns_client).to have_received(:publish).with(hash_including(subject: 'Job complete'))
     end
 
+    it 'does not set the subject when none is specified' do
+      herder.notify('TOPIC_ARN')
+      expect(sns_client).to have_received(:publish).with(satisfy { |h| !h.include?(:subject) })
+    end
+
     it 'sets the message to the EMR job flow ID' do
+      herder.notify('TOPIC_ARN', 'Job complete')
       expect(sns_client).to have_received(:publish).with(hash_including(message: 'j-ABCDEFGHIJKLM'))
     end
   end

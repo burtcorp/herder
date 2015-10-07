@@ -19,8 +19,10 @@ class Herder
     new(Aws::SNS::Client.new).notify(topic_arn, subject)
   end
 
-  def notify(topic_arn, subject)
-    @sns_client.publish(topic_arn: topic_arn, subject: subject, message: job_flow_id)
+  def notify(topic_arn, subject=nil)
+    config = {:topic_arn => topic_arn, :message => job_flow_id}
+    config[:subject] = subject if subject
+    @sns_client.publish(config)
   end
 
   private
