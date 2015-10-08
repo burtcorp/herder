@@ -1,6 +1,7 @@
 require 'optparse'
 require 'aws-sdk'
 require 'json'
+require 'open-uri'
 
 class Herder
   def initialize(sns_client, options={})
@@ -16,7 +17,7 @@ class Herder
       parser.on('--subject STR') { |s| subject = s }
     end
     parser.parse(argv)
-    new(Aws::SNS::Client.new).notify(topic_arn, subject)
+    new(sns_client).notify(topic_arn, subject)
   end
 
   def notify(topic_arn, subject=nil)
@@ -29,5 +30,13 @@ class Herder
 
   def job_flow_id
     JSON.load(File.read(@job_flow_info_path)).fetch('jobFlowId')
+  end
+
+  def self.sns_client
+    options = {}
+    unless ENV['AWS_REGION'] || ENV['AWS_DEFAULT_REGION']
+      options[:region] = open('http://169.254.169.254/latest/meta-data/placement/availability-zone').read.chop
+    end
+    Aws::SNS::Client.new(options)
   end
 end
